@@ -1,1 +1,1 @@
-# ChromeExtensions
+# WebExtensions

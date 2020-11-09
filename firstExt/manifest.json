@@ -1,0 +1,16 @@
+{
+  "name": "First Extendion",
+  "version": "1.0",
+  "description": "Build First Extension!",
+  "manifest_version": 2,
+  "icons": {
+    "16": "starting.png",
+    "32": "starting.png",
+    "48": "starting.png",
+    "128": "starting.png"
+  },
+  "content_scripts": {
+    "matches": ["*"],
+    "js": ["borderify.js"]
+  }
+}

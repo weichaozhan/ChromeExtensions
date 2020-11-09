@@ -2,7 +2,7 @@ const rule1 = {
   conditions: [
     new chrome.declarativeContent.PageStateMatcher({
       pageUrl: {
-        hostEquals: 'www.google.com',
+        hostContains: '.com',
         schemes: ['https']
       }
     })

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>短域名配置</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="./config.css" />
+  </head>
+
+  <body>
+    <div class="container" >
+      <div class="form-add" >
+        <label for="shortName" >
+          <span>短域名：</span>
+          <input id="shortName" placeholder="请输入短域名" />
+        </label>
+        
+        <label for="domain" >
+          <span>域：</span>
+          <input id="domain" placeholder="请输入域" />
+        </label>
+  
+        <button class="form-actions form-actions--add primary" >添加</button>
+      </form>
+
+    </div>
+      <div class="short-domain-existed" >
+        <h2>
+          已设置的短域名
+        </h2>
+
+        <div class="short-domain-existed__actions" >
+          <button class="primary clearList" >清空</button>
+        </div>
+
+        <table class="short-domain-existed__table" >
+        </table>
+      </div>
+    </div>
+
+    <script src="./config.js" ></script>
+  </body>
+</html>

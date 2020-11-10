@@ -5,6 +5,12 @@ const rule1 = {
         hostContains: '.com',
         schemes: ['https']
       }
+    }),
+    new chrome.declarativeContent.PageStateMatcher({
+      pageUrl: {
+        hostContains: '.org',
+        schemes: ['https']
+      }
     })
   ],
   actions: [

@@ -10,7 +10,7 @@ function constructOptions(kButtonColors) {
       chrome.storage.sync.set({
         color: item
       }, function() {
-        console.log('color is ' + item);
+        alert('color is ' + item);
       })
     });
     page.appendChild(button);

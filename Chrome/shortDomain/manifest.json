@@ -1,0 +1,28 @@
+{
+  "name": "短域名跳转",
+  "version": "1.0",
+  "description": "插件用于输入设置的短域名跳转到相应的网站",
+  "manifest_version": 2,
+  "icons": {
+    "16": "shortDomain.png",
+    "32": "shortDomain.png",
+    "48": "shortDomain.png",
+    "128": "shortDomain.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "shortDomain.png",
+      "32": "shortDomain.png",
+      "48": "shortDomain.png",
+      "128": "shortDomain.png"
+    },
+    "default_title": "短域名"
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "omnibox": {
+    "keyword": "/"
+  },
+  "permissions": ["tabs", "storage", "activeTab", "declarativeContent"]
+}

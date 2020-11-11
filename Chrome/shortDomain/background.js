@@ -12,7 +12,7 @@ chrome.omnibox.onInputEntered.addListener((...rest) => {
     
     if (domain) {
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.create({
+        chrome.tabs.update({
           url: domain
         });
       });

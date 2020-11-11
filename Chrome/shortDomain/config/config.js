@@ -1,7 +1,10 @@
 let data = {
+  index: undefined,
   shortName: '',
   domain: '',
-  shortDomainList: []
+  shortDomainList: [],
+  formShow: false,
+  title: ''
 };
 
 const setNewShortDomainList = (callback) => {
@@ -13,30 +16,41 @@ const setNewShortDomainList = (callback) => {
 
 const shortNameInput = document.querySelector('#shortName');
 const domainInput = document.querySelector('#domain');
-const btnSubmit = document.querySelector('.form-actions--add');
+const btnAdd = document.querySelector('.btn-add');
+const btnSubmit = document.querySelector('.form-actions--submit');
+const btnCancel = document.querySelector('.form-actions--cancel');
 const clearBtn = document.querySelector('.clearList');
 const table = document.querySelector('.short-domain-existed__table');
+const formTitle = document.querySelector('.form-title');
 
-const dispatchDataChange = (key, value) => {
-  if (key) {
-    data[key] = value;
+const formWrapper = document.querySelector('.form-wrapper');
+
+const dispatchDataChange = (newData, callback) => {
+  if (newData) {
+    data = {
+      ...newData
+    };
   }
 
-  shortNameInput.setAttribute('value', data.shortName);
-  domainInput.setAttribute('value', data.domain);
+  shortNameInput.value = data.shortName;
+  domainInput.value = data.domain;
   
-  if (!data.shortName || !data.domain) {
+  const {
+    shortName, domain, title, shortDomainList, formShow
+  } = data;
+
+  if (!shortName || !domain) {
     btnSubmit.setAttribute('disabled', true);
   } else {
     btnSubmit.removeAttribute('disabled');
   }
 
-  if (!data.shortDomainList.length) {
+  if (!shortDomainList.length) {
     const nodataStr = `
       <thead>
         <th>序号</th>
         <th>短域名</th>
-        <th>域</th>
+        <th>url</th>
         <th>操作</th>
       </thead>
       <tr>
@@ -51,7 +65,7 @@ const dispatchDataChange = (key, value) => {
     let innerhtml = `
       <thead>
         <th>序号</th>
-        <th>短域名</th>
+        <th>url</th>
         <th>域</th>
         <th>操作</th>
       </thead>
@@ -64,6 +78,7 @@ const dispatchDataChange = (key, value) => {
           <td>${item.shortName}</td>
           <td>${item.domain}</td>
           <td>
+            <button class="primary edit-action" data-item='${JSON.stringify({ ...item, index })}' >修改</button>
             <button class="danger delete-action" data-item='${JSON.stringify(item)}' >删除</button>
           </td>
         </tr>
@@ -73,48 +88,109 @@ const dispatchDataChange = (key, value) => {
 
     clearBtn.removeAttribute('disabled');
   }
+
+  if (formShow) {
+    formWrapper.style.display = 'flex';
+    parseInt(formWrapper.offsetTop);
+    formWrapper.classList.add('show');
+  } else {
+    formWrapper.classList.remove('show');
+    setTimeout(() => {
+      formWrapper.style.display = 'none';
+    }, 200);
+  }
+
+  if (title) {
+    formTitle.innerHTML = title;
+  }
+
+  callback && callback();
 };
 
 setNewShortDomainList(dispatchDataChange);
 
+btnAdd.addEventListener('click', () => {
+  dispatchDataChange({
+    ...data,
+    formShow: true,
+    title: '添加'
+  });
+});
+
 shortNameInput.addEventListener('input', (e) => {
   const shortName = e.target.value;
-  dispatchDataChange('shortName', shortName);
+  dispatchDataChange({
+    ...data,
+    shortName,
+  });
 });
 domain.addEventListener('input', (e) => {
   const domain = e.target.value;
-  dispatchDataChange('domain', domain);
+  dispatchDataChange({
+    ...data,
+    domain
+  });
 });
 btnSubmit.addEventListener('click', () => {
   setNewShortDomainList(() => {
     const shortNameExist = data.shortDomainList.some(item => {
-      return item.shortName === data.shortName;
+      return item.shortName === data.shortName && data.index === undefined;
     });
   
     if (shortNameExist) {
       alert('短域名已占用！');
+    } else if (!/(\w+):\/\/([^/:]+)(:\d*)?/.test(data.domain)) {
+      alert('请输入正确的url，"协议://域名:端口号（可选）"');
     } else {
+      const { index, shortDomainList, shortName, domain } = data;
+      const newList = [...shortDomainList];
+      const newItem = {
+        shortName: shortName,
+        domain: domain
+      };
+
+      if (index === undefined) {
+        newList.push(newItem);
+      } else {
+        newList.splice(index, 1, newItem);
+      }
+
       chrome.storage.sync.set({
-        extensionShortDomain: [
-          ...data.shortDomainList,
-          {
-            shortName: data.shortName,
-            domain: data.domain
-          }
-        ]
+        extensionShortDomain: newList
       }, () => {
         alert('设置成功！');
-        setNewShortDomainList(dispatchDataChange);
+        setNewShortDomainList(() => {
+          dispatchDataChange(null, () => {
+            handleCancel();
+          });
+        });
       });
     }
   });
+});
+
+const handleCancel = () => {
+  dispatchDataChange({
+    ...data,
+    index: undefined,
+    shortName: '',
+    domain: '',
+    formShow: false,
+    title: ''
+  });
+}
+btnCancel.addEventListener('click', () => {
+  handleCancel();
 });
 
 clearBtn.addEventListener('click', () => {
   chrome.storage.sync.set({
     extensionShortDomain: []
   }, () => {
-    dispatchDataChange('shortDomainList', []);
+    dispatchDataChange({
+      ...data,
+      shortDomainList: []
+    });
     alert('清除成功！');
   });
 });
@@ -123,11 +199,16 @@ table.addEventListener('click', (e) => {
   const target = e.target;
   const classList = target.classList;
 
-  if (target && target.nodeName && target.nodeName.toUpperCase() === 'BUTTON' && classList && Array.prototype.indexOf.call(classList, 'delete-action') > -1) {
+  if (target && target.nodeName && target.nodeName.toUpperCase() === 'BUTTON' && classList) {
     const recordStr = target.dataset.item;
 
-    if (recordStr) {
-      const record = JSON.parse(target.dataset.item);
+    if (!recordStr) {
+      return;
+    }
+
+    const record = JSON.parse(target.dataset.item);
+
+    if (Array.prototype.indexOf.call(classList, 'delete-action') > -1) {
       const newList = data.shortDomainList.filter(item => item.shortName !== record.shortName);
   
       chrome.storage.sync.set({
@@ -135,6 +216,12 @@ table.addEventListener('click', (e) => {
       }, () => {
         alert('删除成功！');
         setNewShortDomainList(dispatchDataChange);
+      });
+    } else if (Array.prototype.indexOf.call(classList, 'edit-action') > -1) {
+      dispatchDataChange({
+        ...data,
+        ...record,
+        formShow: true
       });
     }
   }

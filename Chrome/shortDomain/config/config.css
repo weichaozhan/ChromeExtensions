@@ -148,4 +148,9 @@ button:disabled {
 
 .short-domain-existed__actions {
   margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.short-domain-existed__actions .clearList {
+  float: right;
 }

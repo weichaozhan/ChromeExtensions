@@ -109,6 +109,37 @@ const dispatchDataChange = (newData, callback) => {
 
 setNewShortDomainList(dispatchDataChange);
 
+const alertCustom = (props) => {
+  const { timeout = 2000, type = 'success', msg } = props;
+  const msgDom = `
+    <div>
+      ${msg}
+    </div>
+  `;
+  const typeMap = {
+    success: '#87d068',
+    warnning: 'orange',
+    error: 'red'
+  };
+  const div = document.createElement('div');
+
+  div.innerHTML = msgDom;
+  div.style.background = typeMap[type];
+  div.classList.add('alert-msg');
+  document.body.appendChild(div);
+
+  parseInt(formWrapper.offsetTop);
+  div.style.opacity = 1;
+  
+  setTimeout(() => {
+    div.style.opacity = 0;
+    
+    setTimeout(() => {
+      document.body.removeChild(div);
+    }, 200);
+  }, timeout);
+};
+
 btnAdd.addEventListener('click', () => {
   dispatchDataChange({
     ...data,
@@ -138,9 +169,13 @@ btnSubmit.addEventListener('click', () => {
     });
   
     if (shortNameExist) {
-      alert('短域名已占用！');
+      alertCustom({
+        msg: '短域名已占用！'
+      });
     } else if (!/(\w+):\/\/([^/:]+)(:\d*)?/.test(data.domain)) {
-      alert('请输入正确的url，"协议://域名:端口号（可选）"');
+      alertCustom({
+        msg: '请输入正确的url，"协议://域名:端口号（可选）"'
+      });
     } else {
       const { index, shortDomainList, shortName, domain } = data;
       const newList = [...shortDomainList];
@@ -158,7 +193,9 @@ btnSubmit.addEventListener('click', () => {
       chrome.storage.sync.set({
         extensionShortDomain: newList
       }, () => {
-        alert('设置成功！');
+        alertCustom({
+          msg: '设置成功！'
+        });
         setNewShortDomainList(() => {
           dispatchDataChange(null, () => {
             handleCancel();
@@ -184,15 +221,21 @@ btnCancel.addEventListener('click', () => {
 });
 
 clearBtn.addEventListener('click', () => {
-  chrome.storage.sync.set({
-    extensionShortDomain: []
-  }, () => {
-    dispatchDataChange({
-      ...data,
-      shortDomainList: []
+  const result = window.confirm("确认清除？");
+
+  if (result) {
+    chrome.storage.sync.set({
+      extensionShortDomain: []
+    }, () => {
+      dispatchDataChange({
+        ...data,
+        shortDomainList: []
+      });
+      alertCustom({
+        msg: '清除成功！',
+      });
     });
-    alert('清除成功！');
-  });
+  }
 });
 
 table.addEventListener('click', (e) => {
@@ -210,13 +253,18 @@ table.addEventListener('click', (e) => {
 
     if (Array.prototype.indexOf.call(classList, 'delete-action') > -1) {
       const newList = data.shortDomainList.filter(item => item.shortName !== record.shortName);
-  
-      chrome.storage.sync.set({
-        extensionShortDomain: [...newList]
-      }, () => {
-        alert('删除成功！');
-        setNewShortDomainList(dispatchDataChange);
-      });
+      const result = window.confirm('确认删除？');
+
+      if (result) {
+        chrome.storage.sync.set({
+          extensionShortDomain: [...newList]
+        }, () => {
+          alertCustom({
+            msg: '删除成功！'
+          });
+          setNewShortDomainList(dispatchDataChange);
+        });
+      }
     } else if (Array.prototype.indexOf.call(classList, 'edit-action') > -1) {
       dispatchDataChange({
         ...data,

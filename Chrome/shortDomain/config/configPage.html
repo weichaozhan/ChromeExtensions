@@ -7,48 +7,14 @@
   </head>
 
   <body>
-    <div class="container" >
-      <div class="actions" >
-        <button class="primary btn-add" >添加</button>
-      </div>
+    <div id="config-container" class="container" >
 
-      <div class="short-domain-existed" >
-        <h2>
-          已设置的短域名
-        </h2>
-
-        <div class="short-domain-existed__actions" >
-          <button class="primary clearList" >清空</button>
-        </div>
-
-        <table class="short-domain-existed__table" >
-        </table>
-      </div>
-
-      <div class="form-wrapper" >
-        <div class="form-content" >
-          <h3 class="form-title" >
-            添加
-          </h3>
-
-          <div for="shortName" >
-            <span>短域名：</span>
-            <input id="shortName" type="text" placeholder="请输入短域名" />
-          </div>
-          
-          <div for="domain" >
-            <span>url：</span>
-            <input id="domain" type="text" placeholder="请输入域" />
-          </div>
-          
-          <div class="form-footer" >
-            <button class="form-actions form-actions--submit primary" >提交</button>
-            <button class="form-actions form-actions--cancel default" >取消</button>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <script src="./config.js" ></script>
+    <script src="../lib/index.js" ></script>
+    <script src="./table.js" ></script>
+    <script src="./form.js" ></script>
+    <script src="./index.js" ></script>
+    <!-- <script src="./config.js" ></script> -->
   </body>
 </html>

@@ -157,6 +157,7 @@ button:disabled {
 
 .alert-msg {
   min-width: 200px;
+  padding: 0 20px;
   position: fixed;
   top: 10px;
   left: 50%;

@@ -170,4 +170,5 @@ class App extends Component {
   }
 }
 
-mount(root, new App());
+const app = new App();
+mount(root, app);

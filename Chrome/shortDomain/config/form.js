@@ -37,7 +37,7 @@ class Form extends Component {
     } = this.props;
     
     this.el = renderDom(`
-      <div class="form-wrapper ${formShow ? 'show' : ''}" style="display: ${formShow ? 'flex' : 'none'};" >
+      <div class="form-wrapper ${formShow ? 'show' : ''}" >
         <div class="form-content" >
           <h3 class="form-title" >
             ${title}

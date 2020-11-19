@@ -31,12 +31,33 @@ ul, li {
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  transition: all .2s;
 }
 .form-wrapper.show {
-  opacity: 1;
+  display: flex;
+  animation: formWrapperShow .3s normal forwards;
 }
+@keyframes formWrapperShow {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.form-wrapper.none {
+  display: flex;
+  animation: formWrapperNone .3s normal forwards 1;
+}
+@keyframes formWrapperNone {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
 .form-title {
   margin-bottom: 20px;
   font-size: 18px;

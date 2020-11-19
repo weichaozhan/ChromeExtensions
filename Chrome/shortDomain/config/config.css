@@ -22,7 +22,7 @@ ul, li {
 }
 
 .form-wrapper {
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   position: fixed;
@@ -30,10 +30,11 @@ ul, li {
   left: 0;
   width: 100vw;
   height: 100vh;
+  visibility: hidden;
   background: rgba(0, 0, 0, 0.5);
 }
 .form-wrapper.show {
-  display: flex;
+  visibility: visible;
   animation: formWrapperShow .3s normal forwards;
 }
 @keyframes formWrapperShow {
@@ -42,19 +43,6 @@ ul, li {
   }
   100% {
     opacity: 1;
-  }
-}
-.form-wrapper.none {
-  display: flex;
-  animation: formWrapperNone .3s normal forwards 1;
-}
-@keyframes formWrapperNone {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    visibility: hidden;
-    opacity: 0;
   }
 }
 

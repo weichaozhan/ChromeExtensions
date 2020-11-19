@@ -39,8 +39,7 @@ class App extends Component {
       index: undefined,
       shortName: '',
       domain: '',
-      formShow: false,
-      title: ''
+      formShow: false
     });
   }
 
